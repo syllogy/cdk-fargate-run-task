@@ -1,6 +1,6 @@
 {
   "name": "cdk-fargate-run-task",
-  "description": "Define and run container tasks on Fargate immediately or with schedule",
+  "description": "Define and run container tasks on AWS Fargate immediately or with schedule",
   "repository": {
     "type": "git",
     "url": "https://github.com/pahud/cdk-fargate-run-task.git"
@@ -76,7 +76,7 @@
   ],
   "main": "lib/index.js",
   "license": "Apache-2.0",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "jest": {
     "clearMocks": true,
     "collectCoverage": true,

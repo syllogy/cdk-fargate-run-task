@@ -28,6 +28,8 @@ const project = new AwsCdkConstructLibrary({
     module: 'cdk_fargate_run_task',
   },
   dependabot: false,
+  // upgrade every Sunday 6AM
+  projenUpgradeSchedule: ['0 6 * * 0'],
   keywords: [
     'cdk',
     'fargate',

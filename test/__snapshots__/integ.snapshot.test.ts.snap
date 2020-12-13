@@ -1,0 +1,1005 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`integ snapshot validation 1`] = `
+Object {
+  "Parameters": Object {
+    "AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956ArtifactHashD15A2D11": Object {
+      "Description": "Artifact hash for asset \\"4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956\\"",
+      "Type": "String",
+    },
+    "AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956S3Bucket72B03BC9": Object {
+      "Description": "S3 bucket for asset \\"4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956\\"",
+      "Type": "String",
+    },
+    "AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956S3VersionKey520B7554": Object {
+      "Description": "S3 key for asset version \\"4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956\\"",
+      "Type": "String",
+    },
+    "AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24ArtifactHashBA91B77F": Object {
+      "Description": "Artifact hash for asset \\"67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24\\"",
+      "Type": "String",
+    },
+    "AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3Bucket4D46ABB5": Object {
+      "Description": "S3 bucket for asset \\"67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24\\"",
+      "Type": "String",
+    },
+    "AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3VersionKeyB0F28861": Object {
+      "Description": "S3 key for asset version \\"67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24\\"",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "AWS679f53fac002430cb0da5b7982bd22872D164C4C": Object {
+      "DependsOn": Array [
+        "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleDefaultPolicyD28E1A5E",
+        "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956S3Bucket72B03BC9",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956S3VersionKey520B7554",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters4a3609ad912843e581892f37ae9d6fb0fa1648b547693aaa562b0119452b8956S3VersionKey520B7554",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs12.x",
+        "Timeout": 120,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "AWS679f53fac002430cb0da5b7982bd2287LogRetentionCE72797A": Object {
+      "Properties": Object {
+        "LogGroupName": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "/aws/lambda/",
+              Object {
+                "Ref": "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+              },
+            ],
+          ],
+        },
+        "RetentionInDays": 7,
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleDefaultPolicyD28E1A5E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "TaskTaskRoleE98524A1",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "TaskExecutionRoleEF964934",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleDefaultPolicyD28E1A5E",
+        "Roles": Array [
+          Object {
+            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LogGroupF5B46931": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "LogGroupName": "run-task-demo-stackLogGroup",
+        "RetentionInDays": 1,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": Object {
+      "DependsOn": Array [
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3Bucket4D46ABB5",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3VersionKeyB0F28861",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3VersionKeyB0F28861",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs10.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:PutRetentionPolicy",
+                "logs:DeleteRetentionPolicy",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "Roles": Array [
+          Object {
+            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RunDemoTaskEveryHourScheduleRule4BE2F722": Object {
+      "Properties": Object {
+        "ScheduleExpression": "cron(0 * * * ? *)",
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Fn::GetAtt": Array [
+                "RunDemoTaskOnceCluster1F2A1193",
+                "Arn",
+              ],
+            },
+            "EcsParameters": Object {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": Object {
+                "AwsVpcConfiguration": Object {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "TaskSecurityGroup7A9820DB",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": Array [
+                    Object {
+                      "Ref": "RunDemoTaskOnceVpcPrivateSubnet1Subnet5876C593",
+                    },
+                    Object {
+                      "Ref": "RunDemoTaskOnceVpcPrivateSubnet2Subnet34616E0B",
+                    },
+                  ],
+                },
+              },
+              "TaskCount": 1,
+              "TaskDefinitionArn": Object {
+                "Ref": "Task79114B6B",
+              },
+            },
+            "Id": "Target0",
+            "Input": "{}",
+            "RoleArn": Object {
+              "Fn::GetAtt": Array [
+                "TaskEventsRole72969DB9",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "RunDemoTaskOnceCluster1F2A1193": Object {
+      "Type": "AWS::ECS::Cluster",
+    },
+    "RunDemoTaskOnceEcsRunTaskC9CB273B": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "RunDemoTaskOnceEcsRunTaskCustomResourcePolicy5312C412",
+      ],
+      "Properties": Object {
+        "Create": Object {
+          "action": "runTask",
+          "parameters": Object {
+            "cluster": Object {
+              "Ref": "RunDemoTaskOnceCluster1F2A1193",
+            },
+            "launchType": "FARGATE",
+            "networkConfiguration": Object {
+              "awsvpcConfiguration": Object {
+                "assignPublicIp": "DISABLED",
+                "subnets": Array [
+                  Object {
+                    "Ref": "RunDemoTaskOnceVpcPrivateSubnet1Subnet5876C593",
+                  },
+                  Object {
+                    "Ref": "RunDemoTaskOnceVpcPrivateSubnet2Subnet34616E0B",
+                  },
+                ],
+              },
+            },
+            "taskDefinition": Object {
+              "Ref": "Task79114B6B",
+            },
+          },
+          "physicalResourceId": Object {
+            "id": Object {
+              "Ref": "Task79114B6B",
+            },
+          },
+          "service": "ECS",
+        },
+        "InstallLatestAwsSdk": true,
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "Arn",
+          ],
+        },
+        "Update": Object {
+          "action": "runTask",
+          "parameters": Object {
+            "cluster": Object {
+              "Ref": "RunDemoTaskOnceCluster1F2A1193",
+            },
+            "launchType": "FARGATE",
+            "networkConfiguration": Object {
+              "awsvpcConfiguration": Object {
+                "assignPublicIp": "DISABLED",
+                "subnets": Array [
+                  Object {
+                    "Ref": "RunDemoTaskOnceVpcPrivateSubnet1Subnet5876C593",
+                  },
+                  Object {
+                    "Ref": "RunDemoTaskOnceVpcPrivateSubnet2Subnet34616E0B",
+                  },
+                ],
+              },
+            },
+            "taskDefinition": Object {
+              "Ref": "Task79114B6B",
+            },
+          },
+          "physicalResourceId": Object {
+            "id": Object {
+              "Ref": "Task79114B6B",
+            },
+          },
+          "service": "ECS",
+        },
+      },
+      "Type": "Custom::AWS",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "RunDemoTaskOnceEcsRunTaskCustomResourcePolicy5312C412": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ecs:RunTask",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "Task79114B6B",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RunDemoTaskOnceEcsRunTaskCustomResourcePolicy5312C412",
+        "Roles": Array [
+          Object {
+            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RunDemoTaskOnceVpc9F46441F": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "RunDemoTaskOnceVpcIGW1061EB35": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet1DefaultRoute0EABDF23": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet1NATGateway7CA988ED",
+        },
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPrivateSubnet1RouteTable26EB3454",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet1RouteTable26EB3454": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet1RouteTableAssociation0E49CCEA": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPrivateSubnet1RouteTable26EB3454",
+        },
+        "SubnetId": Object {
+          "Ref": "RunDemoTaskOnceVpcPrivateSubnet1Subnet5876C593",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet1Subnet5876C593": Object {
+      "Properties": Object {
+        "AvailabilityZone": Object {
+          "Fn::Select": Array [
+            0,
+            Object {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.128.0/18",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet2DefaultRouteAA48E57A": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet1NATGateway7CA988ED",
+        },
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPrivateSubnet2RouteTable363E0295",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet2RouteTable363E0295": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet2RouteTableAssociationFE03FAF0": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPrivateSubnet2RouteTable363E0295",
+        },
+        "SubnetId": Object {
+          "Ref": "RunDemoTaskOnceVpcPrivateSubnet2Subnet34616E0B",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet2Subnet34616E0B": Object {
+      "Properties": Object {
+        "AvailabilityZone": Object {
+          "Fn::Select": Array [
+            1,
+            Object {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.192.0/18",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet1DefaultRoute9AB13A1E": Object {
+      "DependsOn": Array [
+        "RunDemoTaskOnceVpcVPCGWE9746C27",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "RunDemoTaskOnceVpcIGW1061EB35",
+        },
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet1RouteTable2A556569",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet1EIP6B41F8B4": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet1NATGateway7CA988ED": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "RunDemoTaskOnceVpcPublicSubnet1EIP6B41F8B4",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet1Subnet7250FEBD",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet1RouteTable2A556569": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet1RouteTableAssociation70745768": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet1RouteTable2A556569",
+        },
+        "SubnetId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet1Subnet7250FEBD",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet1Subnet7250FEBD": Object {
+      "Properties": Object {
+        "AvailabilityZone": Object {
+          "Fn::Select": Array [
+            0,
+            Object {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.0.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet2DefaultRoute915AD322": Object {
+      "DependsOn": Array [
+        "RunDemoTaskOnceVpcVPCGWE9746C27",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "RunDemoTaskOnceVpcIGW1061EB35",
+        },
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet2RouteTable1C0FCE3C",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet2RouteTable1C0FCE3C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet2RouteTableAssociationA557EA3B": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet2RouteTable1C0FCE3C",
+        },
+        "SubnetId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet2Subnet1CEA6290",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet2Subnet1CEA6290": Object {
+      "Properties": Object {
+        "AvailabilityZone": Object {
+          "Fn::Select": Array [
+            1,
+            Object {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.64.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "RunDemoTaskOnceVpcVPCGWE9746C27": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "RunDemoTaskOnceVpcIGW1061EB35",
+        },
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+    "Task79114B6B": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Command": Array [
+              "sh",
+              "-c",
+              "ping -c 3 google.com",
+            ],
+            "Essential": true,
+            "Image": "busybox",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "LogGroupF5B46931",
+                },
+                "awslogs-region": Object {
+                  "Ref": "AWS::Region",
+                },
+                "awslogs-stream-prefix": "Ping",
+              },
+            },
+            "Name": "Ping",
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "TaskExecutionRoleEF964934",
+            "Arn",
+          ],
+        },
+        "Family": "runtaskdemostackTaskEFD00EF7",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": Array [
+          "FARGATE",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "TaskTaskRoleE98524A1",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "TaskEventsRole72969DB9": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TaskEventsRoleDefaultPolicyB8BDEBED": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ecs:RunTask",
+              "Condition": Object {
+                "ArnEquals": Object {
+                  "ecs:cluster": Object {
+                    "Fn::GetAtt": Array [
+                      "RunDemoTaskOnceCluster1F2A1193",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "Task79114B6B",
+              },
+            },
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "TaskExecutionRoleEF964934",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "TaskTaskRoleE98524A1",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TaskEventsRoleDefaultPolicyB8BDEBED",
+        "Roles": Array [
+          Object {
+            "Ref": "TaskEventsRole72969DB9",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TaskExecutionRoleDefaultPolicy72339918": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LogGroupF5B46931",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TaskExecutionRoleDefaultPolicy72339918",
+        "Roles": Array [
+          Object {
+            "Ref": "TaskExecutionRoleEF964934",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TaskExecutionRoleEF964934": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TaskSecurityGroup7A9820DB": Object {
+      "Properties": Object {
+        "GroupDescription": "run-task-demo-stack/Task/SecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "TaskTaskRoleE98524A1": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+  },
+}
+`;

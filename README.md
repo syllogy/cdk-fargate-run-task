@@ -1,3 +1,7 @@
+[![NPM version](https://badge.fury.io/js/cdk-fargate-run-task.svg)](https://badge.fury.io/js/cdk-fargate-run-task)
+[![PyPI version](https://badge.fury.io/py/cdk-fargate-run-task.svg)](https://badge.fury.io/py/cdk-fargate-run-task)
+![Release](https://github.com/pahud/cdk-fargate-run-task/workflows/Release/badge.svg)
+
 # cdk-fargate-run-task
 
 Define and run container tasks on AWS Fargate at once or by schedule.

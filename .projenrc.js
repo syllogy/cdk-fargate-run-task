@@ -5,6 +5,7 @@ const project = new AwsCdkConstructLibrary({
   authorName: 'Pahud',
   cdkVersion: '1.73.0',
   name: 'cdk-fargate-run-task',
+  releaseBranches: ['main'],
   description: 'Define and run container tasks on AWS Fargate immediately or with schedule',
   repository: 'https://github.com/pahud/cdk-fargate-run-task.git',
   cdkDependencies: [

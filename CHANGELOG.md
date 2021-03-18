@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.69](https://github.com/pahud/cdk-fargate-run-task/compare/v0.0.68...v0.0.69) (2021-03-18)
+
 ### [0.0.68](https://github.com/pahud/cdk-fargate-run-task/compare/v0.0.67...v0.0.68) (2021-03-06)
 
 ### [0.0.67](https://github.com/pahud/cdk-fargate-run-task/compare/v0.0.66...v0.0.67) (2021-03-05)

@@ -363,6 +363,12 @@ Object {
       "Type": "AWS::Events::Rule",
     },
     "RunDemoTaskOnceCluster1F2A1193": Object {
+      "Properties": Object {
+        "CapacityProviders": Array [
+          "FARGATE",
+          "FARGATE_SPOT",
+        ],
+      },
       "Type": "AWS::ECS::Cluster",
     },
     "RunDemoTaskOnceEcsRunTaskC9CB273B": Object {
@@ -383,7 +389,7 @@ Object {
               Object {
                 "Ref": "Task79114B6B",
               },
-              "\\",\\"launchType\\":\\"FARGATE\\",\\"networkConfiguration\\":{\\"awsvpcConfiguration\\":{\\"assignPublicIp\\":\\"DISABLED\\",\\"subnets\\":[\\"",
+              "\\",\\"capacityProviderStrategy\\":[{\\"capacityProvider\\":\\"FARGATE_SPOT\\",\\"weight\\":1}],\\"networkConfiguration\\":{\\"awsvpcConfiguration\\":{\\"assignPublicIp\\":\\"DISABLED\\",\\"subnets\\":[\\"",
               Object {
                 "Ref": "RunDemoTaskOnceVpcPrivateSubnet1Subnet5876C593",
               },

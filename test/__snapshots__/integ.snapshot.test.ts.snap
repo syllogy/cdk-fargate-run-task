@@ -163,6 +163,26 @@ Object {
                 ],
               },
             },
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ExternalTaskTaskRoleF7620D12",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ExternalTaskExecutionRole58BFCE83",
+                  "Arn",
+                ],
+              },
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -174,6 +194,125 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "ExternalLogGroup87366F28": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 1,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ExternalTask053DBC1D": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Command": Array [
+              "sh",
+              "-c",
+              "ping -c 3 google.com",
+            ],
+            "Essential": true,
+            "Image": "busybox",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "ExternalLogGroup87366F28",
+                },
+                "awslogs-region": Object {
+                  "Ref": "AWS::Region",
+                },
+                "awslogs-stream-prefix": "Ping",
+              },
+            },
+            "Name": "ExternalPing",
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ExternalTaskExecutionRole58BFCE83",
+            "Arn",
+          ],
+        },
+        "Family": "runtaskdemostackExternalTaskC1F62B90",
+        "Memory": "512",
+        "NetworkMode": "bridge",
+        "RequiresCompatibilities": Array [
+          "EXTERNAL",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ExternalTaskTaskRoleF7620D12",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "ExternalTaskExecutionRole58BFCE83": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ExternalTaskExecutionRoleDefaultPolicy3CA0CB0B": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ExternalLogGroup87366F28",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ExternalTaskExecutionRoleDefaultPolicy3CA0CB0B",
+        "Roles": Array [
+          Object {
+            "Ref": "ExternalTaskExecutionRole58BFCE83",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ExternalTaskTaskRoleF7620D12": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
     },
     "LogGroupF5B46931": Object {
       "DeletionPolicy": "Delete",
@@ -361,6 +500,82 @@ Object {
         ],
       },
       "Type": "AWS::Events::Rule",
+    },
+    "RunDemoTaskFromExternalEcsRunTaskCustomResourcePolicy88D031A9": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ecs:RunTask",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "ExternalTask053DBC1D",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RunDemoTaskFromExternalEcsRunTaskCustomResourcePolicy88D031A9",
+        "Roles": Array [
+          Object {
+            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RunDemoTaskFromExternalEcsRunTaskF3A3C730": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "RunDemoTaskFromExternalEcsRunTaskCustomResourcePolicy88D031A9",
+      ],
+      "Properties": Object {
+        "Create": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{\\"service\\":\\"ECS\\",\\"action\\":\\"runTask\\",\\"parameters\\":{\\"cluster\\":\\"",
+              Object {
+                "Ref": "RunDemoTaskOnceCluster1F2A1193",
+              },
+              "\\",\\"taskDefinition\\":\\"",
+              Object {
+                "Ref": "ExternalTask053DBC1D",
+              },
+              "\\",\\"launchType\\":\\"EXTERNAL\\"},\\"physicalResourceId\\":{\\"id\\":\\"",
+              Object {
+                "Ref": "ExternalTask053DBC1D",
+              },
+              "\\"}}",
+            ],
+          ],
+        },
+        "InstallLatestAwsSdk": true,
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::AWS",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "RunDemoTaskFromExternalFargateSecurityGroupA6DDB39B": Object {
+      "Properties": Object {
+        "GroupDescription": "run-task-demo-stack/RunDemoTaskFromExternal/FargateSecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
     },
     "RunDemoTaskOnceCluster1F2A1193": Object {
       "Type": "AWS::ECS::Cluster",

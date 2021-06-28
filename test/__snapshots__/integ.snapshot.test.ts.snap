@@ -163,6 +163,26 @@ Object {
                 ],
               },
             },
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ExternalTaskTaskRoleF7620D12",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ExternalTaskExecutionRole58BFCE83",
+                  "Arn",
+                ],
+              },
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -174,6 +194,205 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "DummySG7756F14C": Object {
+      "Properties": Object {
+        "GroupDescription": "run-task-demo-stack/DummySG",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ExternalLogGroup87366F28": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 1,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ExternalTask053DBC1D": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Command": Array [
+              "sh",
+              "-c",
+              "ping -c 3 google.com",
+            ],
+            "Essential": true,
+            "Image": "busybox",
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "ExternalLogGroup87366F28",
+                },
+                "awslogs-region": "us-east-1",
+                "awslogs-stream-prefix": "Ping",
+              },
+            },
+            "Name": "ExternalPing",
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ExternalTaskExecutionRole58BFCE83",
+            "Arn",
+          ],
+        },
+        "Family": "runtaskdemostackExternalTaskC1F62B90",
+        "Memory": "512",
+        "NetworkMode": "bridge",
+        "RequiresCompatibilities": Array [
+          "EXTERNAL",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ExternalTaskTaskRoleF7620D12",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "ExternalTaskEventsRole2577E813": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ExternalTaskEventsRoleDefaultPolicy362A69D4": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ecs:RunTask",
+              "Condition": Object {
+                "ArnEquals": Object {
+                  "ecs:cluster": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "arn:",
+                        Object {
+                          "Ref": "AWS::Partition",
+                        },
+                        ":ecs:us-east-1:123456789012:cluster/fargate",
+                      ],
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "ExternalTask053DBC1D",
+              },
+            },
+            Object {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ExternalTaskExecutionRole58BFCE83",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ExternalTaskEventsRoleDefaultPolicy362A69D4",
+        "Roles": Array [
+          Object {
+            "Ref": "ExternalTaskEventsRole2577E813",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ExternalTaskExecutionRole58BFCE83": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ExternalTaskExecutionRoleDefaultPolicy3CA0CB0B": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "ExternalLogGroup87366F28",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ExternalTaskExecutionRoleDefaultPolicy3CA0CB0B",
+        "Roles": Array [
+          Object {
+            "Ref": "ExternalTaskExecutionRole58BFCE83",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ExternalTaskTaskRoleF7620D12": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
     },
     "LogGroupF5B46931": Object {
       "DeletionPolicy": "Delete",
@@ -341,6 +560,9 @@ Object {
                     Object {
                       "Ref": "RunDemoTaskOnceVpcPrivateSubnet2Subnet34616E0B",
                     },
+                    Object {
+                      "Ref": "RunDemoTaskOnceVpcPrivateSubnet3Subnet4EA49B76",
+                    },
                   ],
                 },
               },
@@ -354,6 +576,131 @@ Object {
             "RoleArn": Object {
               "Fn::GetAtt": Array [
                 "TaskEventsRole72969DB9",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "RunDemoTaskFromExternalEcsRunTaskCustomResourcePolicy88D031A9": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "ecs:RunTask",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "ExternalTask053DBC1D",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RunDemoTaskFromExternalEcsRunTaskCustomResourcePolicy88D031A9",
+        "Roles": Array [
+          Object {
+            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RunDemoTaskFromExternalEcsRunTaskF3A3C730": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "RunDemoTaskFromExternalEcsRunTaskCustomResourcePolicy88D031A9",
+      ],
+      "Properties": Object {
+        "Create": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{\\"service\\":\\"ECS\\",\\"action\\":\\"runTask\\",\\"parameters\\":{\\"cluster\\":\\"fargate\\",\\"taskDefinition\\":\\"",
+              Object {
+                "Ref": "ExternalTask053DBC1D",
+              },
+              "\\",\\"launchType\\":\\"EXTERNAL\\"},\\"physicalResourceId\\":{\\"id\\":\\"",
+              Object {
+                "Ref": "ExternalTask053DBC1D",
+              },
+              "\\"}}",
+            ],
+          ],
+        },
+        "InstallLatestAwsSdk": true,
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::AWS",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "RunDemoTaskFromExternalFargateSecurityGroupA6DDB39B": Object {
+      "Properties": Object {
+        "GroupDescription": "run-task-demo-stack/RunDemoTaskFromExternal/FargateSecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "RunDemoTaskFromExternalScheduleFargateSecurityGroupB1C62074": Object {
+      "Properties": Object {
+        "GroupDescription": "run-task-demo-stack/RunDemoTaskFromExternalSchedule/FargateSecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "RunDemoTaskFromExternalScheduleScheduleRule2EBD9CEF": Object {
+      "Properties": Object {
+        "ScheduleExpression": "cron(0 * * * ? *)",
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "arn:",
+                  Object {
+                    "Ref": "AWS::Partition",
+                  },
+                  ":ecs:us-east-1:123456789012:cluster/fargate",
+                ],
+              ],
+            },
+            "EcsParameters": Object {
+              "TaskCount": 1,
+              "TaskDefinitionArn": Object {
+                "Ref": "ExternalTask053DBC1D",
+              },
+            },
+            "Id": "Target0",
+            "Input": "{}",
+            "RoleArn": Object {
+              "Fn::GetAtt": Array [
+                "ExternalTaskEventsRole2577E813",
                 "Arn",
               ],
             },
@@ -403,6 +750,10 @@ Object {
               "\\",\\"",
               Object {
                 "Ref": "RunDemoTaskOnceVpcPrivateSubnet2Subnet34616E0B",
+              },
+              "\\",\\"",
+              Object {
+                "Ref": "RunDemoTaskOnceVpcPrivateSubnet3Subnet4EA49B76",
               },
               "\\"],\\"securityGroups\\":[\\"",
               Object {
@@ -534,15 +885,8 @@ Object {
     },
     "RunDemoTaskOnceVpcPrivateSubnet1Subnet5876C593": Object {
       "Properties": Object {
-        "AvailabilityZone": Object {
-          "Fn::Select": Array [
-            0,
-            Object {
-              "Fn::GetAZs": "",
-            },
-          ],
-        },
-        "CidrBlock": "10.0.128.0/18",
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.96.0/19",
         "MapPublicIpOnLaunch": false,
         "Tags": Array [
           Object {
@@ -603,15 +947,8 @@ Object {
     },
     "RunDemoTaskOnceVpcPrivateSubnet2Subnet34616E0B": Object {
       "Properties": Object {
-        "AvailabilityZone": Object {
-          "Fn::Select": Array [
-            1,
-            Object {
-              "Fn::GetAZs": "",
-            },
-          ],
-        },
-        "CidrBlock": "10.0.192.0/18",
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.128.0/19",
         "MapPublicIpOnLaunch": false,
         "Tags": Array [
           Object {
@@ -625,6 +962,68 @@ Object {
           Object {
             "Key": "Name",
             "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet3DefaultRoute8BC8B913": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet1NATGateway7CA988ED",
+        },
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPrivateSubnet3RouteTable34C2D480",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet3RouteTable34C2D480": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet3RouteTableAssociationFB09F4D0": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPrivateSubnet3RouteTable34C2D480",
+        },
+        "SubnetId": Object {
+          "Ref": "RunDemoTaskOnceVpcPrivateSubnet3Subnet4EA49B76",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "RunDemoTaskOnceVpcPrivateSubnet3Subnet4EA49B76": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.160.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PrivateSubnet3",
           },
         ],
         "VpcId": Object {
@@ -707,15 +1106,8 @@ Object {
     },
     "RunDemoTaskOnceVpcPublicSubnet1Subnet7250FEBD": Object {
       "Properties": Object {
-        "AvailabilityZone": Object {
-          "Fn::Select": Array [
-            0,
-            Object {
-              "Fn::GetAZs": "",
-            },
-          ],
-        },
-        "CidrBlock": "10.0.0.0/18",
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/19",
         "MapPublicIpOnLaunch": true,
         "Tags": Array [
           Object {
@@ -779,15 +1171,8 @@ Object {
     },
     "RunDemoTaskOnceVpcPublicSubnet2Subnet1CEA6290": Object {
       "Properties": Object {
-        "AvailabilityZone": Object {
-          "Fn::Select": Array [
-            1,
-            Object {
-              "Fn::GetAZs": "",
-            },
-          ],
-        },
-        "CidrBlock": "10.0.64.0/18",
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.32.0/19",
         "MapPublicIpOnLaunch": true,
         "Tags": Array [
           Object {
@@ -801,6 +1186,71 @@ Object {
           Object {
             "Key": "Name",
             "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet3DefaultRoute19C021B9": Object {
+      "DependsOn": Array [
+        "RunDemoTaskOnceVpcVPCGWE9746C27",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "RunDemoTaskOnceVpcIGW1061EB35",
+        },
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet3RouteTable77BBC514",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet3RouteTable77BBC514": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "RunDemoTaskOnceVpc9F46441F",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet3RouteTableAssociationB5444783": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet3RouteTable77BBC514",
+        },
+        "SubnetId": Object {
+          "Ref": "RunDemoTaskOnceVpcPublicSubnet3Subnet86DC6494",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "RunDemoTaskOnceVpcPublicSubnet3Subnet86DC6494": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.64.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/RunDemoTaskOnce/Vpc/PublicSubnet3",
           },
         ],
         "VpcId": Object {
@@ -837,9 +1287,7 @@ Object {
                 "awslogs-group": Object {
                   "Ref": "LogGroupF5B46931",
                 },
-                "awslogs-region": Object {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "us-east-1",
                 "awslogs-stream-prefix": "Ping",
               },
             },
@@ -1016,6 +1464,456 @@ Object {
         },
       },
       "Type": "AWS::IAM::Role",
+    },
+    "Vpc8378EB38": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "VpcIGWD7BA715C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "VpcPrivateSubnet1DefaultRouteBE02A9ED": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "VpcPublicSubnet1NATGateway4D7517AA",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet1RouteTableB2C5B500",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPrivateSubnet1RouteTableAssociation70C59FA6": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet1RouteTableB2C5B500",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPrivateSubnet1Subnet536B997A",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPrivateSubnet1RouteTableB2C5B500": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPrivateSubnet1Subnet536B997A": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.96.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPrivateSubnet2DefaultRoute060D2087": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "VpcPublicSubnet1NATGateway4D7517AA",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet2RouteTableA678073B",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPrivateSubnet2RouteTableA678073B": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPrivateSubnet2RouteTableAssociationA89CAD56": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet2RouteTableA678073B",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPrivateSubnet2Subnet3788AAA1",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPrivateSubnet2Subnet3788AAA1": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.128.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPrivateSubnet3DefaultRoute94B74F0D": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "VpcPublicSubnet1NATGateway4D7517AA",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet3RouteTableD98824C7",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPrivateSubnet3RouteTableAssociation16BDDC43": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPrivateSubnet3RouteTableD98824C7",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPrivateSubnet3SubnetF258B56E",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPrivateSubnet3RouteTableD98824C7": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPrivateSubnet3SubnetF258B56E": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.160.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPublicSubnet1DefaultRoute3DA9E72A": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet1RouteTable6C95E38E",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnet1EIPD7E02669": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "VpcPublicSubnet1NATGateway4D7517AA": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "VpcPublicSubnet1EIPD7E02669",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnet1Subnet5C2D37C4",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "VpcPublicSubnet1RouteTable6C95E38E": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnet1RouteTableAssociation97140677": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet1RouteTable6C95E38E",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnet1Subnet5C2D37C4",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnet1Subnet5C2D37C4": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPublicSubnet2DefaultRoute97F91067": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet2RouteTable94F7E489",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnet2RouteTable94F7E489": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnet2RouteTableAssociationDD5762D8": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet2RouteTable94F7E489",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnet2Subnet691E08A3",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnet2Subnet691E08A3": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.32.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcPublicSubnet3DefaultRoute4697774F": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet3RouteTable93458DBB",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcPublicSubnet3RouteTable93458DBB": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcPublicSubnet3RouteTableAssociation1F1EDF02": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcPublicSubnet3RouteTable93458DBB",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcPublicSubnet3SubnetBE12F0B6",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcPublicSubnet3SubnetBE12F0B6": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.64.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "run-task-demo-stack/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcVPCGWBF912B6E": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
     },
   },
 }

@@ -16,6 +16,11 @@ export enum PlatformVersion {
   LATEST = 'LATEST',
 }
 
+export enum LaunchType {
+  FARGATE = 'FARGATE',
+  EXTERNAL = 'EXTERNAL',
+}
+
 export interface RunTaskProps {
   /**
    * The VPC for the Amazon ECS task
@@ -70,6 +75,15 @@ export interface RunTaskProps {
    * @default - No capacity provider strategy defined. Use LaunchType instead.
    */
   readonly capacityProviderStrategy?: ecs.CapacityProviderStrategy[];
+  /**
+   * Luanch Type of the task. Default is `FARGATE`, however, if you choose `EXTERNAL`, you are allowed to
+   * run external tasks on external instances. The `capacityProviderStrategy` will be ingored if you specify
+   * this property. Please note this is the feature from ECS Anywhere. The external task will be scheduled on the
+   * registered external instance(s). No fargate task will be scheduled in the `EXTERNAL` launch type.
+   *
+   * @default FARGATE
+   */
+  readonly launchType?: LaunchType;
 }
 
 export class RunTask extends Construct implements ec2.IConnectable {
@@ -93,7 +107,7 @@ export class RunTask extends Construct implements ec2.IConnectable {
     const vpc = props.vpc ?? props.cluster ? props.cluster!.vpc : getOrCreateVpc(this);
     const cluster = props.cluster ?? new ecs.Cluster(this, 'Cluster', {
       vpc,
-      capacityProviders: ['FARGATE', 'FARGATE_SPOT'],
+      enableFargateCapacityProviders: true,
     });
     const task = props.task;
     this.vpc = vpc;
@@ -121,9 +135,10 @@ export class RunTask extends Construct implements ec2.IConnectable {
           cluster: cluster.clusterName,
           taskDefinition: task.taskDefinitionArn,
           capacityProviderStrategy: props.capacityProviderStrategy,
-          launchType: props.capacityProviderStrategy ? undefined : 'FARGATE',
+          launchType: props.launchType ?? (props.capacityProviderStrategy ? undefined : LaunchType.FARGATE),
           platformVersion: props.fargatePlatformVersion,
-          networkConfiguration: {
+          // networkConfiguration is not required with the `EXTERNAL` launch type
+          networkConfiguration: props.launchType === LaunchType.EXTERNAL ? undefined : {
             awsvpcConfiguration: {
               assignPublicIp: 'DISABLED',
               subnets: vpc.selectSubnets({

@@ -18,6 +18,7 @@ Name|Description
 
 Name|Description
 ----|-----------
+[LaunchType](#cdk-fargate-run-task-launchtype)|*No description*
 [PlatformVersion](#cdk-fargate-run-task-platformversion)|Fargate platform version.
 
 
@@ -45,6 +46,7 @@ new RunTask(scope: Construct, id: string, props: RunTaskProps)
   * **capacityProviderStrategy** (<code>Array<[CapacityProviderStrategy](#aws-cdk-aws-ecs-capacityproviderstrategy)></code>)  The capacity provider strategy to run the fargate task; __*Default*__: No capacity provider strategy defined. Use LaunchType instead.
   * **cluster** (<code>[ICluster](#aws-cdk-aws-ecs-icluster)</code>)  The Amazon ECS Cluster. __*Default*__: create a new cluster
   * **fargatePlatformVersion** (<code>[PlatformVersion](#cdk-fargate-run-task-platformversion)</code>)  Fargate platform version. __*Default*__: LATEST
+  * **launchType** (<code>[LaunchType](#cdk-fargate-run-task-launchtype)</code>)  Luanch Type of the task. __*Default*__: FARGATE
   * **logRetention** (<code>[RetentionDays](#aws-cdk-aws-logs-retentiondays)</code>)  Log retention days. __*Default*__: one week
   * **runAtOnce** (<code>boolean</code>)  run it at once(immediately after deployment). __*Default*__: true
   * **runOnResourceUpdate** (<code>boolean</code>)  run the task again on the custom resource update. __*Default*__: false
@@ -80,6 +82,7 @@ Name | Type | Description
 **capacityProviderStrategy**? | <code>Array<[CapacityProviderStrategy](#aws-cdk-aws-ecs-capacityproviderstrategy)></code> | The capacity provider strategy to run the fargate task;<br/>__*Default*__: No capacity provider strategy defined. Use LaunchType instead.
 **cluster**? | <code>[ICluster](#aws-cdk-aws-ecs-icluster)</code> | The Amazon ECS Cluster.<br/>__*Default*__: create a new cluster
 **fargatePlatformVersion**? | <code>[PlatformVersion](#cdk-fargate-run-task-platformversion)</code> | Fargate platform version.<br/>__*Default*__: LATEST
+**launchType**? | <code>[LaunchType](#cdk-fargate-run-task-launchtype)</code> | Luanch Type of the task.<br/>__*Default*__: FARGATE
 **logRetention**? | <code>[RetentionDays](#aws-cdk-aws-logs-retentiondays)</code> | Log retention days.<br/>__*Default*__: one week
 **runAtOnce**? | <code>boolean</code> | run it at once(immediately after deployment).<br/>__*Default*__: true
 **runOnResourceUpdate**? | <code>boolean</code> | run the task again on the custom resource update.<br/>__*Default*__: false
@@ -87,6 +90,16 @@ Name | Type | Description
 **securityGroup**? | <code>[ISecurityGroup](#aws-cdk-aws-ec2-isecuritygroup)</code> | fargate security group.<br/>__*Default*__: create a default security group
 **vpc**? | <code>[IVpc](#aws-cdk-aws-ec2-ivpc)</code> | The VPC for the Amazon ECS task.<br/>__*Default*__: create a new VPC or use existing one
 
+
+
+## enum LaunchType  <a id="cdk-fargate-run-task-launchtype"></a>
+
+
+
+Name | Description
+-----|-----
+**FARGATE** |
+**EXTERNAL** |
 
 
 ## enum PlatformVersion  <a id="cdk-fargate-run-task-platformversion"></a>

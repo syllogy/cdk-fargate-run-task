@@ -48,7 +48,7 @@ const project = new AwsCdkConstructLibrary({
 });
 
 project.package.addField('resolutions', {
-  'trim-newlines': '3.0.1',
+  xmldom: 'github:xmldom/xmldom#0.7.0',
 });
 
 const common_exclude = ['cdk.out', 'cdk.context.json', 'images', 'yarn-error.log'];
